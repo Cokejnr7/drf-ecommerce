@@ -7,12 +7,14 @@ class Order(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField()
-    address = models.CharField(max_length=250)
+    phone = models.CharField()
+    address1 = models.CharField(max_length=250)
+    address2 = models.CharField(max_length=250,blank=True,null=True)
     postal_code = models.CharField(max_length=20)
     city = models.CharField(max_length=100)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    paid = models.BooleanField(default=False)
+    is_paid = models.BooleanField(default=False)
 
     class Meta:
         ordering = ('-created',)
@@ -20,6 +22,10 @@ class Order(models.Model):
         
     def __str__(self) -> str:
         return f"{self.first_name}  {self.last_name}"
+    
+
+    def get_total_cost(self):
+        return sum(item.get_cost() for item in self.items)
     
         
 class OrderItem(models.Model):
@@ -31,17 +37,10 @@ class OrderItem(models.Model):
     qty = models.IntegerField(null=True, blank=True, default=0)
     price = models.DecimalField(
         max_digits=7, decimal_places=2, null=True, blank=True)
-    image = models.ImageField()
     id = models.AutoField(primary_key=True, unique=True, editable=False)
     
+    def get_cost(self):
+        return self.qty*self.price
     
     def __str__(self) -> str:
         return self.name
-    
-    def save(self, *args, **kwargs):
-        self.image = self.product.image
-        return super.save( *args, **kwargs)
-    
-    @property
-    def get_cost(self):
-        return self.qty*self.price
