@@ -12,6 +12,7 @@ class Product(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     in_stock = models.BooleanField(default=True)
+    count_instock = models.IntegerField()
     
     class Meta:
         ordering = ('name',)
