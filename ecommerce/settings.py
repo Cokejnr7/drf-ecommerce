@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 from decouple import config
 
@@ -26,7 +26,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG',cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 3rd party
     'rest_framework',
+    'storages',
 
     # app
     'product.apps.ProductConfig',
@@ -122,7 +123,26 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+
+# tells django where to locate the static files
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+# user uploaded contents
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media') 
+
+# staticfiles in production
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# AWS_ACCESS_KEY_ID=config('AWS_ACCESS_KEY_ID')
+# AWS_SECRET_KEY=config('AWS_SECRET_KEY')
+# AWS_STORAGE_BUCKET_NAME=config('AWS_STORAGE_BUCKET_NAME')
+
+# AWS_S3_FILE_OVERWRITE=False
+# AWS_DEFAULT_ACL=None
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

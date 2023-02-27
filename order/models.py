@@ -4,10 +4,15 @@ from product.models import Product
 
 
 class Order(models.Model):
+    class Status(models.TextChoices):
+        PENDING = 'PNDG', "pending"
+        DELIVERED = 'DELV', "delivered"
+        IN_TRANSIT = 'INTNS', "inTransit"
+        
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField()
-    phone = models.CharField()
+    phone = models.CharField(max_length=20)
     address1 = models.CharField(max_length=250)
     address2 = models.CharField(max_length=250,blank=True,null=True)
     postal_code = models.CharField(max_length=20)
@@ -15,6 +20,7 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     is_paid = models.BooleanField(default=False)
+    status = models.CharField(max_length=20,choices=Status.choices,default=Status.PENDING)
 
     class Meta:
         ordering = ('-created',)
@@ -30,7 +36,7 @@ class Order(models.Model):
         
 class OrderItem(models.Model):
     product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, null=True, blank=True)
+        Product, on_delete=models.CASCADE,related_name='order_items', null=True, blank=True)
     order = models.ForeignKey(
         Order, on_delete=models.CASCADE,related_name="items", null=True, blank=True)
     name = models.CharField(max_length=200, blank=True, null=True)
@@ -41,6 +47,11 @@ class OrderItem(models.Model):
     
     def get_cost(self):
         return self.qty*self.price
+    
+    def save(self,*args,**kwargs):
+        self.price = self.product.price
+        self.name = self.product.name
+        return super().save(*args,**kwargs)
     
     def __str__(self) -> str:
         return self.name
