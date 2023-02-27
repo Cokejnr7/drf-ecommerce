@@ -1,7 +1,9 @@
 from django.db import models
 from product.models import Product
+from django.contrib.auth import get_user_model
 # Create your models here.
 
+User = get_user_model()
 
 class Order(models.Model):
     class Status(models.TextChoices):
@@ -9,6 +11,7 @@ class Order(models.Model):
         DELIVERED = 'DELV', "delivered"
         IN_TRANSIT = 'INTNS', "inTransit"
         
+    owner = models.ForeignKey(User,on_delete=models.CASCADE)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField()

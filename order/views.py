@@ -27,7 +27,7 @@ class OrderViewset(viewsets.ModelViewSet):
                 item = OrderItem.objects.create(product=product,
                                                 qty=item['qty'],
                                                 order=order)
-        except Exception as e:
+        except:
               return Response("validation error",status=status.HTTP_400_BAD_REQUEST)
         
         serializer = OrderSerializer(order) 
