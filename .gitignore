@@ -2,3 +2,4 @@ venv/
 .env
 static/
 staticfiles/
+db.sqlite3
