@@ -23,11 +23,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
 
+#jwt secret key for encoding and decoding tokens
+JWT_SECRET_KEY = config('JWT_SECRET_KEY')
+
+#Algorithm used in encoding and decoding token
+ALGORITHM = config('ALGORITHM')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG',cast=bool)
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -41,6 +46,7 @@ INSTALLED_APPS = [
     # 3rd party
     'rest_framework',
     'storages',
+     "corsheaders",
 
     # app
     'product.apps.ProductConfig',
@@ -48,9 +54,15 @@ INSTALLED_APPS = [
     'authentication.apps.AuthenticationConfig'
 ]
 
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES':('authentication.backends.JWTAuthentication',),
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -150,3 +162,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'authentication.CustomUser'
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+]

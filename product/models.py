@@ -11,11 +11,18 @@ class Product(models.Model):
     category = models.ManyToManyField("Category",blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    in_stock = models.BooleanField(default=True)
-    count_instock = models.IntegerField()
+    in_stock = models.BooleanField(default=False)
+    count_instock = models.IntegerField(default=0)
     
     class Meta:
         ordering = ('name',)
+        
+    def save(self,*args, **kwargs):
+        if self.count_instock == 0:
+            self.in_stock = False
+        else:
+            self.in_stock = True  
+        return super().save(*args, **kwargs)
         
     def __str__(self) -> str:
         return self.name
