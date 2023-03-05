@@ -2,6 +2,7 @@ from django.http import Http404
 from rest_framework import generics,viewsets,mixins
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
 from .serializers import OrderSerializer,OrderItemSerializer
 from .models import Order,OrderItem
@@ -15,6 +16,7 @@ User = get_user_model()
 class OrderViewset(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
     queryset = Order.objects.all()
+    permission_classes = [IsAuthenticated]
     
     
     def get_order(self, pk:int) -> Type[Order]:
@@ -33,7 +35,7 @@ class OrderViewset(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         data = request.data
         
-        if not data.items:
+        if not data.get("items"):
             return Response({"detail":"No Order Items"},status=status.HTTP_400_BAD_REQUEST)
         
         items = data.pop('items')
@@ -41,7 +43,7 @@ class OrderViewset(viewsets.ModelViewSet):
         try:
             order = Order(**data)
             #testing to change to request.user
-            order.owner = User.objects.get(email="kolawolecoke@gmail.com")
+            order.owner = request.user
             order.save()
             for item in items:
                 product = Product.objects.get(id = item.get("product"))
@@ -63,14 +65,25 @@ class OrderViewset(viewsets.ModelViewSet):
         data = request.data
         pk = int(kwargs.get("pk"))
         
-        if not data.items:
+        if not data.get("items"):
             return Response({"detail":"No Order Items"},status=status.HTTP_400_BAD_REQUEST)
         
         items = data.pop('items')
         
         
         order = self.get_order(pk)
+        old_items_id = {item.id for item in order.items.all()}
+        new_items_id = {item.get("id") for item in items if item.get("id")!=None}
         
+        #delete removed order items
+        for item in old_items_id:
+            if item not in new_items_id:
+                item = OrderItem.objects.get(id=item)
+                product = item.product
+                product.count_instock += item.qty
+                product.save()
+                item.delete()
+            
         for item in items:
                 product = Product.objects.get(id = item.get("product"))
                 
@@ -144,23 +157,4 @@ def update_order_paid(request,pk):
 
     return Response("order was paid",status=status.HTTP_200_OK)
 
-
-# #updates the order paid field to True
-# @api_view(['PUT'])
-# def update_order_status(request,pk):
-#     try:
-#         order = Order.objects.get(id=pk)
-#     except Order.DoesNotExist:
-#         raise Http404
-    
-#     order.is_paid = D
-
-#     return Response("order was paid",status=status.HTTP_200_OK)
-    
-# class OrderItemViewSet(generics.GenericAPIView,mixins.UpdateModelMixin,mixins.DestroyModelMixin):
-#     serializer_class = OrderItemSerializer
-#     queryset = OrderItem.objects.all()
-        
-#     def put(self, request,pk):
-#         return self.update(request,pk)
         

@@ -21,7 +21,7 @@ class JWTAuthentication(authentication.BasicAuthentication):
             payload = jwt.decode(token,settings.JWT_SECRET_KEY,algorithms=[settings.ALGORITHM,])
             user = User.objects.get(email=payload['email'])
             
-            return user
+            return (user,token)
             
         except jwt.DecodeError:
             raise exceptions.AuthenticationFailed("invalid token")
