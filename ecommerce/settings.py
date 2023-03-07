@@ -43,10 +43,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
     # 3rd party
     'rest_framework',
     'storages',
-     "corsheaders",
+    'corsheaders',
+    'drf_yasg',
 
     # app
     'product.apps.ProductConfig',
@@ -54,6 +56,15 @@ INSTALLED_APPS = [
     'authentication.apps.AuthenticationConfig'
 ]
 
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        "Auth Token eg [Bearer (JWT) ]": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES':('authentication.backends.JWTAuthentication',),
