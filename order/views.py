@@ -8,6 +8,7 @@ from .serializers import OrderSerializer,OrderItemSerializer
 from .models import Order,OrderItem
 from product.models import Product
 from django.contrib.auth import get_user_model
+from .permissions import IsOrderOwner
 from typing import Type
 
 # Create your views here.
@@ -16,7 +17,7 @@ User = get_user_model()
 class OrderViewset(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
     queryset = Order.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsOrderOwner]
     
     
     def get_order(self, pk:int) -> Type[Order]:
