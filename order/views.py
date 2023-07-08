@@ -3,7 +3,7 @@ from rest_framework import generics,viewsets,mixins
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,permission_classes
 from .serializers import OrderSerializer,OrderItemSerializer
 from .models import Order,OrderItem
 from product.models import Product
@@ -148,6 +148,7 @@ class OrderViewset(viewsets.ModelViewSet):
     
 #updates the order paid field to True
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_order_paid(request,pk):
     try:
         order = Order.objects.get(id=pk)
