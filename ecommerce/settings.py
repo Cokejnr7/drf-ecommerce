@@ -159,6 +159,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
 # staticfiles in production
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+
 # AWS_ACCESS_KEY_ID=config('AWS_ACCESS_KEY_ID')
 # AWS_SECRET_KEY=config('AWS_SECRET_KEY')
 # AWS_STORAGE_BUCKET_NAME=config('AWS_STORAGE_BUCKET_NAME')
