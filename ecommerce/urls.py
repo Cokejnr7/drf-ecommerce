@@ -23,14 +23,14 @@ from rest_framework import permissions
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="Snippets API",
+      title="Ecommerce API",
       default_version='v1',
       description="Test description",
       terms_of_service="https://www.google.com/policies/terms/",
       contact=openapi.Contact(email="contact@snippets.local"),
       license=openapi.License(name="BSD License"),
    ),
-   url='https://drf-ecommerce-production.up.railway.app/',
+   url='https://drf-ecommerce-production.up.railway.app',
    public=True,
    permission_classes=[permissions.AllowAny],
 )
