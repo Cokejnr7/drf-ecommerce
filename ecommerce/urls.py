@@ -30,6 +30,7 @@ schema_view = get_schema_view(
       contact=openapi.Contact(email="contact@snippets.local"),
       license=openapi.License(name="BSD License"),
    ),
+   url='https://drf-ecommerce-production.up.railway.app/',
    public=True,
    permission_classes=[permissions.AllowAny],
 )

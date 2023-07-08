@@ -174,6 +174,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'authentication.CustomUser'
+
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
+    'https://drf-ecommerce-production.up.railway.app',
 ]
+
+CSRF_TRUSTED_ORIGINS = ['https://drf-ecommerce-production.up.railway.app',]
