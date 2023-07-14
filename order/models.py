@@ -30,7 +30,7 @@ class Order(models.Model):
         
         
     def __str__(self) -> str:
-        return f"{self.first_name}  {self.last_name}"
+        return f"{self.first_name}  {self.last_name} "
     
 
     def get_total_cost(self):
