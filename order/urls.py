@@ -1,10 +1,12 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
-from .views import OrderViewset,update_order_paid
+from . import views
+
 router = DefaultRouter()
 
-router.register("orders",OrderViewset)
 
-urlpatterns = router.urls
-
-urlpatterns += [path('orders/paid/',update_order_paid)]
+urlpatterns = [
+    path("user/orders/", views.UserListCreateOrderAPIView.as_view()),
+    path("user/orders/<str:id>/", views.UserRetrieveOrderAPIView.as_view()),
+    path("orders/paid/", views.update_order_paid),
+]

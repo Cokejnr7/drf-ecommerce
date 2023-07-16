@@ -17,6 +17,7 @@ import jwt
 User = get_user_model()
 
 
+# register view
 class UserCreateView(generics.GenericAPIView):
     serializer_class = UserSerializer
     queryset = User.objects.all()
@@ -31,6 +32,7 @@ class UserCreateView(generics.GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# login view
 class UserLoginView(generics.GenericAPIView):
     serializer_class = UserLoginSerializer
 
@@ -65,6 +67,12 @@ class UserLoginView(generics.GenericAPIView):
         return response
 
 
+#logout view
+def logout_view(request):
+    
+    return Response("sucessfully logged out")
+
+# refresh view
 @api_view(["POST"])
 def refresh_token_view(request):
     refresh_token = request.COOKIES.get("refresh_token")
