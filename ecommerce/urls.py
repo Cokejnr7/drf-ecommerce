@@ -21,6 +21,14 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
 
+
+def handle_url(debug: bool):
+    if debug:
+        return "http://127.0.0.1:8000/"
+
+    return "https://drf-ecommerce-production.up.railway.app/"
+
+
 schema_view = get_schema_view(
     openapi.Info(
         title="Ecommerce API",
@@ -30,14 +38,14 @@ schema_view = get_schema_view(
         contact=openapi.Contact(email="kolawolecoke@gmail.com"),
         license=openapi.License(name="BSD License"),
     ),
-    url="https://drf-ecommerce-production.up.railway.app/",
+    url=handle_url(settings.DEBUG),
     public=True,
     permission_classes=[permissions.AllowAny],
 )
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/", include("product.urls")),
+    path("api/store/", include("product.urls")),
     path("api/", include("order.urls")),
     path("api-auth/", include("authentication.urls")),
     path("", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),

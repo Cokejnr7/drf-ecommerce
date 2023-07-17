@@ -8,7 +8,7 @@ from .serializers import OrderSerializer, OrderItemSerializer
 from .models import Order, OrderItem
 from product.models import Product
 from django.contrib.auth import get_user_model
-from .permissions import IsStaffOrOrderOwner
+from .permissions import IsStaffOrOrderOwner, IsStaff
 from typing import Type
 
 # Create your views here.
@@ -20,6 +20,7 @@ class UserListCreateOrderAPIView(generics.GenericAPIView):
     serializer_class = OrderSerializer
     queryset = Order.objects.all()
     permission_classes = [IsAuthenticated]
+    http_method_names = ["get", "post"]
 
     def get_queryset(self, request):
         queryset = super().get_queryset()
@@ -44,15 +45,20 @@ class UserListCreateOrderAPIView(generics.GenericAPIView):
         items = data.pop("items")
 
         try:
+            # creating new order
             order = Order(**data)
             # testing to change to request.user
             order.owner = request.user
             order.save()
+
+            # looping through the list of item dictionary to create OrderItems
             for item in items:
                 product = Product.objects.get(id=item.get("product"))
                 item = OrderItem.objects.create(
                     product=product, qty=item["qty"], order=order
                 )
+
+                # updating count in stock of the product
                 product.count_instock -= item.qty
                 product.save()
 
@@ -65,7 +71,7 @@ class UserListCreateOrderAPIView(generics.GenericAPIView):
 
 
 # get order by ID
-class UserRetrieveOrderAPIView(generics.GenericAPIView):
+class RetrieveOrderAPIView(generics.GenericAPIView):
     serializer_class = OrderSerializer
     queryset = Order.objects.all()
     permission_classes = [IsAuthenticated, IsStaffOrOrderOwner]
@@ -85,26 +91,40 @@ class UserRetrieveOrderAPIView(generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         id = int(kwargs["id"])
-
         order = self.get_order(id)
+
+        self.check_object_permissions(request, order)
 
         serializer = self.serializer_class(order, many=False)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+# admin list all orders
+class AdminListOrder(generics.ListAPIView):
+    serializer_class = OrderSerializer
+    queryset = Order.objects.all()
+    permission_classes = [IsAuthenticated, IsStaff]
+
+
 # updates the order paid field to True
-@api_view(["PUT"])
 @permission_classes([IsAuthenticated])
-def update_order_paid(request, pk):
+@api_view(["PUT"])
+def update_order_paid(request, *args, **kwargs):
+    print(args, kwargs)
     try:
-        order = Order.objects.get(id=pk)
+        order = Order.objects.get(id=kwargs["id"])
     except Order.DoesNotExist:
         raise Http404
 
-    order.is_paid = True
+    if order.owner == request.user:
+        order.is_paid = True
+        return Response("order was paid", status=status.HTTP_200_OK)
 
-    return Response("order was paid", status=status.HTTP_200_OK)
+    return Response(
+        "You do not have permission to perform this action.",
+        status=status.HTTP_401_UNAUTHORIZED,
+    )
 
 
 # update order status
