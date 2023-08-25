@@ -9,7 +9,7 @@ urlpatterns = [
     # user urls
     path("user/orders/", views.UserListCreateOrderAPIView.as_view()),
     path("user/orders/<str:id>/", views.RetrieveOrderAPIView.as_view()),
-    path("user/orders/<str:id>/paid/", views.update_order_paid),
+    path("user/orders/<str:id>/paid/", views.update_order_paid, name="update-paid"),
     # admin urls
     path("admin/orders/<str:id>/", views.RetrieveOrderAPIView.as_view()),
 ]
