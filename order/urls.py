@@ -1,15 +1,21 @@
 from django.urls import path
-from rest_framework.routers import DefaultRouter
 from . import views
-
-router = DefaultRouter()
 
 
 urlpatterns = [
     # user urls
-    path("user/orders/", views.UserListCreateOrderAPIView.as_view()),
-    path("user/orders/<str:id>/", views.RetrieveOrderAPIView.as_view()),
+    path(
+        "user/orders/",
+        views.UserListCreateOrderAPIView.as_view(),
+        name="user-list-create",
+    ),
+    path(
+        "user/orders/<str:id>/",
+        views.RetrieveOrderAPIView.as_view(),
+        name="retrieve-order",
+    ),
     path("user/orders/<str:id>/paid/", views.update_order_paid, name="update-paid"),
     # admin urls
     path("admin/orders/<str:id>/", views.RetrieveOrderAPIView.as_view()),
+    path("orders/<str:id>/status", views.update_order_status, name="update-status"),
 ]
