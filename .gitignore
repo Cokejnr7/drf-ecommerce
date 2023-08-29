@@ -4,3 +4,5 @@ static/
 staticfiles/
 static_files/
 *.sqlite3
+htmlcov/
+.coverage

@@ -6,6 +6,12 @@ from .views import (
     UserListCreateOrderAPIView,
     RetrieveOrderAPIView,
 )
+from product.models import Product, Category
+from .models import Order, OrderItem
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()
 
 
 # Create your tests here.
@@ -33,5 +39,32 @@ class TestUrls(SimpleTestCase):
         )
 
 
-class TestModels(TestCase):
+class TestOrderModel(TestCase):
+    def setUp(self):
+        user = User.objects.create(
+            email="cokejnr@gmail.com",
+            first_name="coke",
+            last_name="jnr",
+            password="12345",
+        )
+
+        order_item1 = OrderItem.objects.create()
+        self.order = Order.objects.create(
+            owner=user,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            email=user.email,
+            phone="+2348578853857307",
+            address1="mushin",
+            postal_code="1212",
+            city="lagos",
+        )
+
+        pass
+
+    def test_total_cost(self):
+        self.assertEqual()
+
+
+class TestOrderItemModel(TestCase):
     pass
