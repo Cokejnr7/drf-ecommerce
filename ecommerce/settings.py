@@ -106,14 +106,14 @@ WSGI_APPLICATION = "ecommerce.wsgi.application"
 
 DATABASES = {
     "default": {
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': BASE_DIR / 'db.sqlite3',
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("NAME"),
-        "USER": config("USER"),
-        "PASSWORD": config("PASSWORD"),
-        "HOST": config("HOST"),
-        "PORT": config("PORT"),
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+        # "ENGINE": "django.db.backends.postgresql",
+        # "NAME": config("NAME"),
+        # "USER": config("USER"),
+        # "PASSWORD": config("PASSWORD"),
+        # "HOST": config("HOST"),
+        # "PORT": config("PORT"),
     }
 }
 
@@ -153,39 +153,39 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 
-AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
-AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME")
-AWS_S3_SIGNATURE_NAME = config("AWS_S3_SIGNATURE_NAME")
-AWS_S3_REGION_NAME = config("AWS_S3_REGION_NAME")
-AWS_S3_FILE_OVERWRITE = False
-AWS_S3_VERITY = True
+# AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
+# AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
+# AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME")
+# AWS_S3_SIGNATURE_NAME = config("AWS_S3_SIGNATURE_NAME")
+# AWS_S3_REGION_NAME = config("AWS_S3_REGION_NAME")
+# AWS_S3_FILE_OVERWRITE = False
+# AWS_S3_VERITY = True
 
-AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
-AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
+# AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+# AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
 
-# s3 static settings
-STATIC_LOCATION = "static"
-STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/"
-STATICFILES_STORAGE = "depot.backend_storages.StaticStorage"
+# # s3 static settings
+# STATIC_LOCATION = "static"
+# STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/"
+# STATICFILES_STORAGE = "depot.backend_storages.StaticStorage"
 
-# s3 public media settings
-PUBLIC_MEDIA_LOCATION = "media"
-MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/"
-DEFAULT_FILE_STORAGE = "depot.backend_storages.PublicMediaStorage"
+# # s3 public media settings
+# PUBLIC_MEDIA_LOCATION = "media"
+# MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/"
+# DEFAULT_FILE_STORAGE = "depot.backend_storages.PublicMediaStorage"
 
 
-# STATIC_URL = "/static/"
-# MEDIA_URL = "/media/"
+STATIC_URL = "/static/"
+MEDIA_URL = "/media/"
 
-# # user uploaded contents
-# MEDIA_ROOT = os.path.join(BASE_DIR, "static/media")
+# user uploaded contents
+MEDIA_ROOT = os.path.join(BASE_DIR, "static/media")
 
-# # staticfiles in production
-# STATIC_ROOT = os.path.join(BASE_DIR, "static_files")
+# staticfiles in production
+STATIC_ROOT = os.path.join(BASE_DIR, "static_files")
 
-# # tells django where to locate the static files
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+# tells django where to locate the static files
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

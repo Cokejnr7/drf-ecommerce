@@ -2,6 +2,7 @@ from django.db import models
 from product.models import Product
 from django.contrib.auth import get_user_model
 from .validators import validate_item_price
+import uuid
 
 # Create your models here.
 
@@ -27,9 +28,13 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     is_paid = models.BooleanField(default=False)
+    total_amount = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, default=0.00
+    )
     status = models.CharField(
         max_length=20, choices=Status.choices, default=Status.PENDING
     )
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # payment_method  =
 
     class Meta:
@@ -39,7 +44,11 @@ class Order(models.Model):
         return f"{self.first_name} {self.last_name}"
 
     def get_total_cost(self):
-        return sum(item.get_cost() for item in self.items)
+        return sum([item.get_cost() for item in self.items.all()])
+
+    def save(self, *args, **kwargs):
+        self.total_amount = self.get_total_cost()
+        return super().save(*args, **kwargs)
 
 
 class OrderItem(models.Model):
@@ -47,16 +56,16 @@ class OrderItem(models.Model):
         Product,
         on_delete=models.CASCADE,
         related_name="order_items",
-        null=True,
-        blank=True,
     )
+
     order = models.ForeignKey(
-        Order, on_delete=models.CASCADE, related_name="items", null=True, blank=True
+        Order,
+        on_delete=models.CASCADE,
+        related_name="items",
     )
     name = models.CharField(max_length=200, blank=True)
     qty = models.IntegerField(null=False, blank=False)
     price = models.DecimalField(
-        default=0.00,
         max_digits=7,
         decimal_places=2,
         blank=True,
