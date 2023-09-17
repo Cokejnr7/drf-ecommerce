@@ -64,7 +64,7 @@ class OrderItem(models.Model):
         related_name="items",
     )
     name = models.CharField(max_length=200, blank=True)
-    qty = models.IntegerField(null=False, blank=False)
+    qty = models.PositiveIntegerField(null=False, blank=False)
     price = models.DecimalField(
         max_digits=7,
         decimal_places=2,
