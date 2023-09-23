@@ -21,7 +21,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     name="list",
     decorator=swagger_auto_schema(
         operation_description="returns list of all categories.",
-        operation_summary="list categories",
+        operation_summary="categories list",
     ),
 )
 class CategoryViewSet(viewsets.ModelViewSet):
