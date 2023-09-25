@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from product.models import Product
 from django.contrib.auth import get_user_model
 from .validators import validate_item_price
@@ -72,7 +73,7 @@ class OrderItem(models.Model):
         blank=True,
         validators=[validate_item_price],
     )
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     id = models.AutoField(primary_key=True, unique=True, editable=False)
 

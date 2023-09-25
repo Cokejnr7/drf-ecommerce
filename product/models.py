@@ -76,7 +76,7 @@ class Category(models.Model):
 
 
 class Review(models.Model):
-    Product = models.ForeignKey(
+    product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="reviews"
     )
     reviewer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviews")
