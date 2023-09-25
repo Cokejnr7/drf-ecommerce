@@ -3,6 +3,7 @@ from django.utils import timezone
 from product.models import Product
 from django.contrib.auth import get_user_model
 from .validators import validate_item_price
+from django.utils.translation import gettext_lazy as _
 
 # import uuid
 
@@ -13,10 +14,10 @@ User = get_user_model()
 
 class Order(models.Model):
     class Status(models.TextChoices):
-        PENDING = "PNDG", "pending"
-        DELIVERED = "DELV", "delivered"
-        IN_TRANSIT = "INTNS", "inTransit"
-        CANCELLED = "CNXLD", "cancelled"
+        PENDING = "pending", _("Pending")
+        DELIVERED = "delivered", _("Delivered")
+        IN_TRANSIT = "shipped", _("Shipped")
+        CANCELLED = "cancelled", _("Cancelled")
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=50)
@@ -43,7 +44,7 @@ class Order(models.Model):
         ordering = ("-created_at",)
 
     def __str__(self) -> str:
-        return f"{self.first_name} {self.last_name}"
+        return f"Order by {self.owner.email} {self.status}"
 
     def get_total_cost(self):
         return sum([item.get_cost() for item in self.items.all()])

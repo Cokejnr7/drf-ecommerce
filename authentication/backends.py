@@ -2,6 +2,7 @@ from rest_framework import authentication, exceptions
 import jwt
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
 
@@ -17,14 +18,16 @@ class JWTAuthentication(authentication.BasicAuthentication):
 
         if len(auth) < 2:
             raise exceptions.AuthenticationFailed(
-                "Authentication credentials were not provided or are invalid."
+                _("Authentication credentials were not provided or are invalid.")
             )
 
         prefix, token = auth
 
         if prefix != "Bearer":
             raise exceptions.AuthenticationFailed(
-                "Authentication credentials were not provided or are invalid (Expected Bearer token type)"
+                _(
+                    "Authentication credentials were not provided or are invalid (Expected Bearer token type)"
+                )
             )
 
         try:
@@ -40,7 +43,7 @@ class JWTAuthentication(authentication.BasicAuthentication):
             return (user, token)
 
         except jwt.DecodeError:
-            raise exceptions.AuthenticationFailed("invalid token")
+            raise exceptions.AuthenticationFailed(_("invalid token"))
 
         except jwt.ExpiredSignatureError:
-            raise exceptions.AuthenticationFailed("token expired")
+            raise exceptions.AuthenticationFailed(_("token expired"))
