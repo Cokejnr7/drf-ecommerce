@@ -2,7 +2,8 @@ from django.db import models
 from product.models import Product
 from django.contrib.auth import get_user_model
 from .validators import validate_item_price
-import uuid
+
+# import uuid
 
 # Create your models here.
 
@@ -25,8 +26,8 @@ class Order(models.Model):
     address2 = models.CharField(max_length=250, blank=True, null=True)
     postal_code = models.CharField(max_length=20)
     city = models.CharField(max_length=100)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     is_paid = models.BooleanField(default=False)
     total_amount = models.DecimalField(
         max_digits=10, decimal_places=2, blank=True, default=0.00
@@ -34,11 +35,11 @@ class Order(models.Model):
     status = models.CharField(
         max_length=20, choices=Status.choices, default=Status.PENDING
     )
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.AutoField(primary_key=True, unique=True, editable=False)
     # payment_method  =
 
     class Meta:
-        ordering = ("-created",)
+        ordering = ("-created_at",)
 
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name}"
@@ -64,14 +65,19 @@ class OrderItem(models.Model):
         related_name="items",
     )
     name = models.CharField(max_length=200, blank=True)
-    qty = models.PositiveIntegerField(null=False, blank=False)
+    qty = models.PositiveIntegerField(default=1)
     price = models.DecimalField(
         max_digits=7,
         decimal_places=2,
         blank=True,
         validators=[validate_item_price],
     )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     id = models.AutoField(primary_key=True, unique=True, editable=False)
+
+    class Meta:
+        ordering = ("-created_at",)
 
     def get_cost(self):
         return self.qty * self.price

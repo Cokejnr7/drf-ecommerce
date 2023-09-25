@@ -1,21 +1,50 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 
 # Create your models here.
+
+User = get_user_model()
+
+
+class Color(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        verbose_name = "Color"
+        verbose_name_plural = "Colors"
+
+    def __str__(self):
+        return self.name
+
+
+class Size(models.Model):
+    name = models.CharField(max_length=10, unique=True)
+
+    class Meta:
+        verbose_name = "Size"
+        verbose_name_plural = "Sizes"
+
+    def __str__(self):
+        return self.name
 
 
 class Product(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    image = models.ImageField(upload_to="images/%Y/%m/%d")
+    image = models.ImageField(upload_to="images/products/%Y/%m/%d")
     price = models.DecimalField(max_digits=7, decimal_places=2)
+    colors = models.ManyToManyField(Color, blank=True)
+    sizes = models.ManyToManyField(Size, blank=True)
     description = models.TextField(blank=True, null=True)
     categories = models.ManyToManyField("Category", blank=True, related_name="products")
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     in_stock = models.BooleanField(default=False)
     count_instock = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ("name",)
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
+        ordering = ("-created_at",)
 
     def save(self, *args, **kwargs):
         if self.count_instock == 0:
@@ -30,9 +59,12 @@ class Product(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
-
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(
+        upload_to="images/products/%Y/%m/%d", blank=True, null=True
+    )
+    description = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
         return self.name
@@ -40,4 +72,14 @@ class Category(models.Model):
     class Meta:
         verbose_name = "Category"
         verbose_name_plural = "Categories"
-        ordering = ("name",)
+        ordering = ("-created_at",)
+
+
+class Review(models.Model):
+    Product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment = models.TextField()
+    rating = models.PositiveIntegerField()
+
+    def __str__(self) -> str:
+        return f"{self.owner} {self.rating}"
