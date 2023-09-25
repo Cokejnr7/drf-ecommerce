@@ -24,7 +24,8 @@ class UserListCreateOrderAPIView(generics.GenericAPIView):
 
     def get_queryset(self, request):
         queryset = super().get_queryset()
-        queryset = queryset.filter(owner=request.user)
+        if request.user.is_authenticated and not (request.user.is_staff):
+            queryset = queryset.filter(owner=request.user)
         return queryset
 
     def get(self, request, *args, **kwargs):
@@ -98,13 +99,6 @@ class RetrieveOrderAPIView(generics.GenericAPIView):
         serializer = self.serializer_class(order, many=False)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-# admin list all orders
-class AdminListOrder(generics.ListAPIView):
-    serializer_class = OrderSerializer
-    queryset = Order.objects.all()
-    permission_classes = [IsAuthenticated, IsStaff]
 
 
 # updates the order paid field to True

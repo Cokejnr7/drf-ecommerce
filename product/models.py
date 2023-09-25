@@ -30,6 +30,7 @@ class Product(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
+
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
 
@@ -37,4 +38,6 @@ class Category(models.Model):
         return self.name
 
     class Meta:
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
         ordering = ("name",)
