@@ -76,10 +76,19 @@ class Category(models.Model):
 
 
 class Review(models.Model):
-    Product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    Product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="reviews"
+    )
+    reviewer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviews")
     comment = models.TextField()
-    rating = models.PositiveIntegerField()
+    rating = models.PositiveIntegerField(
+        choices=[(1, "1"), (2, "2"), (3, "3"), (4, "4"), (5, "5")]
+    )
+
+    class Meta:
+        verbose_name = "Review"
+        verbose_name_plural = "Reviews"
+        unique_together = ["product", "reviewer"]
 
     def __str__(self) -> str:
-        return f"{self.owner} {self.rating}"
+        return f"Review by {self.reviewer.email} for {self.product.name}"
