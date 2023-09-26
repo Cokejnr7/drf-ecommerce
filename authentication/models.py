@@ -34,12 +34,18 @@ class CustomManager(BaseUserManager):
         return self.create_user(email, password, **other_fields)
 
 
+AUTH_PROVIDERS = {"email": "email", "google": "google"}
+
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    auth_provider = models.CharField(
+        max_length=100, default=AUTH_PROVIDERS.get("email")
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
