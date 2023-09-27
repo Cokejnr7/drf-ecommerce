@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "product.apps.ProductConfig",
     "order.apps.OrderConfig",
     "authentication.apps.AuthenticationConfig",
+    "social_auth.apps.SocialAuthConfig",
 ]
 
 SWAGGER_SETTINGS = {
