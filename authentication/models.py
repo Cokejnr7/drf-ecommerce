@@ -39,8 +39,8 @@ AUTH_PROVIDERS = {"email": "email", "google": "google"}
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=150)
-    last_name = models.CharField(max_length=150)
+    first_name = models.CharField(max_length=150, blank=True, null=True)
+    last_name = models.CharField(max_length=150, blank=True, null=True)
     auth_provider = models.CharField(
         max_length=100, default=AUTH_PROVIDERS.get("email")
     )
@@ -51,7 +51,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["first_name", "last_name"]
+    REQUIRED_FIELDS = ["auth_provider"]
 
     objects = CustomManager()
 
