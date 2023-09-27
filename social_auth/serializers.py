@@ -30,6 +30,6 @@ class GoogleLoginSerializer(serializers.Serializer):
 
         user_id = user_data.get("sub")
         email = user_data.get("email")
-        provider = user_data.get("provider")
+        provider = user_data.get("iss").split(".")[1]
 
         return register_social_user(user_id, email, provider)
