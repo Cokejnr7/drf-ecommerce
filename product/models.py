@@ -42,8 +42,8 @@ class Product(models.Model):
     count_instock = models.PositiveIntegerField(default=0)
 
     class Meta:
-        verbose_name = "Category"
-        verbose_name_plural = "Categories"
+        verbose_name = "Product"
+        verbose_name_plural = "Products"
         ordering = ("-created_at",)
 
     def save(self, *args, **kwargs):
