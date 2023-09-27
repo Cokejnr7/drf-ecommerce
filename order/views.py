@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from .serializers import OrderSerializer, OrderItemSerializer
 from .models import Order, OrderItem
-from product.models import Product
+from store.models import Product
 from django.contrib.auth import get_user_model
 from .permissions import IsStaffOrOrderOwner, IsStaff
 from typing import Type

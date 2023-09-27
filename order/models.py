@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from product.models import Product
+from store.models import Product
 from django.contrib.auth import get_user_model
 from .validators import validate_item_price
 from django.utils.translation import gettext_lazy as _

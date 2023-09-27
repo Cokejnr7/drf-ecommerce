@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "drf_yasg",
     # app
-    "product.apps.ProductConfig",
+    "store.apps.StoreConfig",
     "order.apps.OrderConfig",
     "authentication.apps.AuthenticationConfig",
     "social_auth.apps.SocialAuthConfig",

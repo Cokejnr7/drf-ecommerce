@@ -6,7 +6,7 @@ from .views import (
     UserListCreateOrderAPIView,
     RetrieveOrderAPIView,
 )
-from product.models import Product
+from store.models import Product
 from .models import Order, OrderItem
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
