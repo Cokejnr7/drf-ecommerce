@@ -1,6 +1,11 @@
+# django imports
 from django.shortcuts import render
+
+# rest_framework imports
 from rest_framework import generics, status
 from rest_framework.response import Response
+
+# app imports
 from .serializers import GoogleLoginSerializer
 
 # Create your views here.

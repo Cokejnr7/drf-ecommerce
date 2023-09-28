@@ -1,16 +1,23 @@
+# django imports
 from django.shortcuts import render
 from django.utils.translation import gettext_lazy as _
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.conf import settings
+from django.contrib.auth import get_user_model
+
+# rest_framework imports
 from rest_framework import generics, exceptions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import UserSerializer, UserLoginSerializer
-from django.contrib.auth import get_user_model, authenticate
-from .token import generate_access_token, generate_refresh_token
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.conf import settings
+
+# 3rd party imports
 import jwt
+
+# application imports
+from .serializers import UserSerializer, UserLoginSerializer
+from .token import generate_access_token, generate_refresh_token
 
 
 # Create your views here.
@@ -49,7 +56,7 @@ class UserLoginView(generics.GenericAPIView):
         user = User.objects.filter(email=email).first()
 
         if user is None:
-            raise exceptions.AuthenticationFailed("no user with that email")
+            raise exceptions.AuthenticationFailed("user with that email does not exist")
 
         if user.auth_provider != "email":
             raise exceptions.AuthenticationFailed(
