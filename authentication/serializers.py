@@ -1,5 +1,6 @@
-from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers, exceptions
 
 User = get_user_model()
 
@@ -17,7 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         email = attrs.get("email")
         if User.objects.filter(email=email).exists():
-            raise serializers.ValidationError("user with that email already exist")
+            raise serializers.ValidationError(_("user with that email already exist"))
 
         return super().validate(attrs)
 

@@ -1,10 +1,11 @@
 from django.shortcuts import render
+from django.utils.translation import gettext_lazy as _
 from rest_framework import generics, exceptions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import UserSerializer, UserLoginSerializer
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from .token import generate_access_token, generate_refresh_token
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -24,7 +25,7 @@ class UserCreateView(generics.GenericAPIView):
 
     def post(self, request):
         data = request.data
-        serializer = UserSerializer(data=data)
+        serializer = self.get_serializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -42,13 +43,18 @@ class UserLoginView(generics.GenericAPIView):
         email = data.get("email")
         password = data.get("password")
 
-        if email is None and password is None:
+        if email is None or password is None:
             raise exceptions.AuthenticationFailed("email and password required")
 
         user = User.objects.filter(email=email).first()
 
         if user is None:
             raise exceptions.AuthenticationFailed("no user with that email")
+
+        if user.auth_provider != "email":
+            raise exceptions.AuthenticationFailed(
+                _(f"Please continue your login using {user.auth_provider}")
+            )
 
         if not user.check_password(password):
             raise exceptions.AuthenticationFailed("wrong password")
@@ -67,10 +73,10 @@ class UserLoginView(generics.GenericAPIView):
         return response
 
 
-#logout view
+# logout view
 def logout_view(request):
-    
     return Response("sucessfully logged out")
+
 
 # refresh view
 @api_view(["POST"])
