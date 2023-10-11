@@ -40,7 +40,13 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get"])
     def popular_products(self, request):
-        products = self.get_queryset().order_by("-popularity")[:11]
+        products = self.get_queryset().order_by("-popularity")[:8]
+        serializer = self.get_serializer(products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=["get"])
+    def recent_products(self, request):
+        products = self.get_queryset()[:8]
         serializer = self.get_serializer(products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
