@@ -40,6 +40,7 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     in_stock = models.BooleanField(default=False)
     count_instock = models.PositiveIntegerField(default=0)
+    popularity = models.PositiveIntegerField(default=0)
 
     class Meta:
         verbose_name = "Product"

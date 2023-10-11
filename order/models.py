@@ -16,7 +16,7 @@ class Order(models.Model):
     class Status(models.TextChoices):
         PENDING = "pending", _("Pending")
         DELIVERED = "delivered", _("Delivered")
-        IN_TRANSIT = "shipped", _("Shipped")
+        SHIPPED = "shipped", _("Shipped")
         CANCELLED = "cancelled", _("Cancelled")
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE)

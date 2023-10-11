@@ -2,7 +2,8 @@
 from django.utils.decorators import method_decorator
 
 # rest_framework imports
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
 
@@ -24,6 +25,17 @@ class ProductViewSet(viewsets.ModelViewSet):
     parser_classes = [MultiPartParser, FormParser]
     queryset = Product.objects.all()
     permission_classes = [IsStaff, IsAuthenticated]
+
+    def retrieve(self, request, *args, **kwargs):
+        product = self.get_object()
+
+        # increase product populaarity when a customer views the product
+        if not (request.user.is_staff) and not (request.user.superuser):
+            product.popularity += 1
+            product.save()
+
+        serializer = self.serializer_class(product)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @method_decorator(
