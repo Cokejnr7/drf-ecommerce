@@ -4,6 +4,7 @@ from django.utils.decorators import method_decorator
 # rest_framework imports
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
 
@@ -34,7 +35,13 @@ class ProductViewSet(viewsets.ModelViewSet):
             product.popularity += 1
             product.save()
 
-        serializer = self.serializer_class(product)
+        serializer = self.get_serializer(product)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=["get"])
+    def popular_products(self, request):
+        products = self.get_queryset().order_by("-popularity")[:11]
+        serializer = self.get_serializer(products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
