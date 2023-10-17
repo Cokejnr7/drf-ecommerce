@@ -46,16 +46,15 @@ class UserLoginView(generics.GenericAPIView):
 
     @method_decorator(ensure_csrf_cookie)
     def post(self, request):
-        data = request.data
-        email = data.get("email")
-        password = data.get("password")
+        email = request.data.get("email")
+        password = request.data.get("password")
 
         if email is None or password is None:
             raise exceptions.AuthenticationFailed("email and password required")
 
-        user = User.objects.filter(email=email).first()
-
-        if user is None:
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
             raise exceptions.AuthenticationFailed("user with that email does not exist")
 
         if user.auth_provider != "email":
