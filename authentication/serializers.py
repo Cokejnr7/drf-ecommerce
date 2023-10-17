@@ -5,7 +5,9 @@ from rest_framework import serializers, exceptions
 User = get_user_model()
 
 
-class UserRegisterSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(min_length=8, write_only=True)
+
     class Meta:
         model = User
         fields = ["email", "first_name", "last_name", "password", "id"]
@@ -25,11 +27,13 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return user
 
 
-class UserLoginSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["email", "password"]
+class UserLoginSerializer(serializers.Serializer):
+    email = serializers.EmailField(min_length=2)
+    password = serializers.CharField(min_length=8, write_only=True)
 
 
 class PasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField()
+
+    # class Meta:
+    #     fields = ["email"]

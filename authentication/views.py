@@ -16,7 +16,7 @@ from rest_framework import status
 import jwt
 
 # application imports
-from .serializers import UserRegisterSerializer, UserLoginSerializer
+from .serializers import UserSerializer, UserLoginSerializer
 from .token import generate_access_token, generate_refresh_token
 
 
@@ -27,17 +27,15 @@ User = get_user_model()
 
 # register view
 class UserRegisterView(generics.GenericAPIView):
-    serializer_class = UserRegisterSerializer
+    serializer_class = UserSerializer
     queryset = User.objects.all()
 
     def post(self, request):
         data = request.data
         serializer = self.get_serializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 # login view
@@ -49,8 +47,8 @@ class UserLoginView(generics.GenericAPIView):
         email = request.data.get("email")
         password = request.data.get("password")
 
-        if email is None or password is None:
-            raise exceptions.AuthenticationFailed("email and password required")
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
         try:
             user = User.objects.get(email=email)
