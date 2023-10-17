@@ -16,7 +16,7 @@ from rest_framework import status
 import jwt
 
 # application imports
-from .serializers import UserSerializer, UserLoginSerializer
+from .serializers import UserRegisterSerializer, UserLoginSerializer
 from .token import generate_access_token, generate_refresh_token
 
 
@@ -26,8 +26,8 @@ User = get_user_model()
 
 
 # register view
-class UserCreateView(generics.GenericAPIView):
-    serializer_class = UserSerializer
+class UserRegisterView(generics.GenericAPIView):
+    serializer_class = UserRegisterSerializer
     queryset = User.objects.all()
 
     def post(self, request):
