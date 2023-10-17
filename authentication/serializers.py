@@ -32,8 +32,17 @@ class UserLoginSerializer(serializers.Serializer):
     password = serializers.CharField(min_length=8, write_only=True)
 
 
-class PasswordResetSerializer(serializers.Serializer):
-    email = serializers.EmailField()
+class ResetPasswordEmailRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField(min_length=2)
 
-    # class Meta:
-    #     fields = ["email"]
+    def validate(self, attrs):
+        try:
+            email = attrs.get("email")
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return attrs
+        else:
+            # send email for password reset token
+            pass
+        finally:
+            return super().validate(attrs)

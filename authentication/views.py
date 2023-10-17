@@ -16,7 +16,11 @@ from rest_framework import status
 import jwt
 
 # application imports
-from .serializers import UserSerializer, UserLoginSerializer
+from .serializers import (
+    UserSerializer,
+    UserLoginSerializer,
+    ResetPasswordEmailRequestSerializer,
+)
 from .token import generate_access_token, generate_refresh_token
 
 
@@ -111,6 +115,9 @@ def refresh_token_view(request):
     return Response({"access_token": access_token})
 
 
-class PasswordResetAPIView(generics.GenericAPIView):
+class ResetPasswordEmailRequestAPIView(generics.GenericAPIView):
+    serializer_class = ResetPasswordEmailRequestSerializer
+
     def post(self, request):
-        pass
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exceptions=True)
