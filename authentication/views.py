@@ -112,3 +112,8 @@ def refresh_token_view(request):
     access_token = generate_access_token(user)
 
     return Response({"access_token": access_token})
+
+
+class PasswordResetAPIView(generics.GenericAPIView):
+    def post(self, request):
+        pass

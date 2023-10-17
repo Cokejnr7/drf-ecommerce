@@ -16,12 +16,12 @@ class JWTAuthentication(authentication.BasicAuthentication):
 
         auth = authorization_header.decode("utf-8").split(" ")
 
-        if len(auth) < 2:
+        try:
+            prefix, token = auth
+        except ValueError:
             raise exceptions.AuthenticationFailed(
                 _("Authentication credentials were not provided or are invalid.")
             )
-
-        prefix, token = auth
 
         if prefix != "Bearer":
             raise exceptions.AuthenticationFailed(
