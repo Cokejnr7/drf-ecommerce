@@ -1,0 +1,2 @@
+class TOTPVerification(object):
+    pass
