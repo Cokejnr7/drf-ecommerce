@@ -26,6 +26,9 @@ SECRET_KEY = config("SECRET_KEY")
 # jwt secret key for encoding and decoding tokens
 JWT_SECRET_KEY = config("JWT_SECRET_KEY")
 
+# otp secret key
+OTP_SECRET = config("OTP_SECRET")
+
 # Algorithm used in encoding and decoding token
 ALGORITHM = config("ALGORITHM")
 
