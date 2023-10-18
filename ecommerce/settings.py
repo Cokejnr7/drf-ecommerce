@@ -29,6 +29,8 @@ JWT_SECRET_KEY = config("JWT_SECRET_KEY")
 # otp secret key
 OTP_SECRET = config("OTP_SECRET")
 
+OTP_INTERVAL = config("OTP_INTERVAL", cast=int)
+
 # Algorithm used in encoding and decoding token
 ALGORITHM = config("ALGORITHM")
 
@@ -205,3 +207,10 @@ CORS_ALLOWED_ORIGINS = [
 CSRF_TRUSTED_ORIGINS = [
     "https://drf-ecommerce-production.up.railway.app",
 ]
+
+
+EMAIL_HOST = config("EMAIL_HOST")
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast="bool")
+EMAIL_PORT = config("EMAIL_PORT")
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")

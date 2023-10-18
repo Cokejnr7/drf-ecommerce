@@ -119,5 +119,18 @@ class ResetPasswordEmailRequestAPIView(generics.GenericAPIView):
     serializer_class = ResetPasswordEmailRequestSerializer
 
     def post(self, request):
-        serializer = self.get_serializer(data=request.data)
+        data = {"request": request, "data": request.data}
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exceptions=True)
+        return Response(
+            {"sucess": "we have sent you a link to reset your password"},
+            status=status.HTTP_200_OK,
+        )
+
+
+class PasswordCheckTokenAPIView(generics.GenericAPIView):
+    def get(self, request, uidb64):
+        pass
+
+    def post(self, request):
+        otp = request.data.get("otp")

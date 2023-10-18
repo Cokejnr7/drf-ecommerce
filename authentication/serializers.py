@@ -1,6 +1,16 @@
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers, exceptions
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.encoding import (
+    smart_bytes,
+    smart_str,
+    force_str,
+    DjangoUnicodeDecodeError,
+)
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse
 
 User = get_user_model()
 
@@ -37,12 +47,26 @@ class ResetPasswordEmailRequestSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         try:
-            email = attrs.get("email")
+            email = attrs["data"].get("email")
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             return attrs
         else:
-            # send email for password reset token
+            uidb64 = urlsafe_base64_encode(user.id)
+            token = PasswordResetTokenGenerator().make_token(user)
+            current_site = get_current_site(request=attrs["request"]).domain
+            relative_link = reverse(
+                "password-reset-confirm", kwargs={"uidb64": uidb64, "token": token}
+            )
+            absurl = "http://" + current_site + relative_link
+            email_body = (
+                f"Hi {user.email} use the link below to reset your password \n" + absurl
+            )
+            data = {
+                "email_body": email_body,
+                "to_email": user.email,
+                "email_subject": "Reset your password",
+            }
             pass
         finally:
             return super().validate(attrs)
