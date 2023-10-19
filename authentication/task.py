@@ -3,18 +3,19 @@ from django.core.mail import send_mail
 from django.conf import settings
 
 
-def send_email(subject, message, recipient_email):
+def send_email(subject, message, email):
     try:
+        print("thread try")
         task = threading.Thread(
             target=send_mail,
             args=(
                 subject,
                 message,
                 settings.EMAIL_HOST_USER,
-                [recipient_email],
+                [email],
             ),
         )
 
         task.start()
-    except:
-        pass
+    except Exception as e:
+        print(e)

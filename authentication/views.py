@@ -20,6 +20,7 @@ from .serializers import (
     UserSerializer,
     UserLoginSerializer,
     ResetPasswordEmailRequestSerializer,
+    PasswordCheckTokenSerializer,
 )
 from .token import generate_access_token, generate_refresh_token
 
@@ -119,8 +120,7 @@ class ResetPasswordEmailRequestAPIView(generics.GenericAPIView):
     serializer_class = ResetPasswordEmailRequestSerializer
 
     def post(self, request):
-        data = {"request": request, "email": request.data.get("email")}
-        serializer = self.get_serializer(data=data)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response(
             {"sucess": "we have sent you a link to reset your password"},
@@ -129,8 +129,11 @@ class ResetPasswordEmailRequestAPIView(generics.GenericAPIView):
 
 
 class PasswordCheckTokenAPIView(generics.GenericAPIView):
+    serializer_class = PasswordCheckTokenSerializer
+
     def get(self, request, uidb64):
         pass
 
     def post(self, request):
+        pass
         otp = request.data.get("otp")
