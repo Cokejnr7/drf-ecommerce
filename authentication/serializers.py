@@ -51,16 +51,13 @@ class ResetPasswordEmailRequestSerializer(serializers.Serializer):
         email = attrs.get("email", "")
 
         try:
-            print("hey try {}".format(email))
             user = User.objects.get(email=email.lower(), auth_provider="email")
         except User.DoesNotExist:
-            print("hey error")
             return attrs
         else:
             uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
             token = PasswordResetTokenGenerator().make_token(user)
             current_site = get_current_site(request=request).domain
-            print(get_current_site(request=request))
             relative_link = reverse(
                 "password-reset-confirm", kwargs={"uidb64": uidb64, "token": token}
             )
@@ -73,8 +70,7 @@ class ResetPasswordEmailRequestSerializer(serializers.Serializer):
                 "email": user.email,
                 "subject": "Reset your password",
             }
-            print("before sending email")
-            send_email(data["subject"], data["message"], data["email"])
+            send_email(**data)
 
         finally:
             return super().validate(attrs)

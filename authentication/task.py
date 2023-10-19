@@ -5,7 +5,6 @@ from django.conf import settings
 
 def send_email(subject, message, email):
     try:
-        print("thread try")
         task = threading.Thread(
             target=send_mail,
             args=(
