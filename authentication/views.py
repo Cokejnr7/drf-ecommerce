@@ -48,14 +48,14 @@ class UserLoginView(generics.GenericAPIView):
 
     @method_decorator(ensure_csrf_cookie)
     def post(self, request):
-        email = request.data.get("email")
-        password = request.data.get("password")
+        email = request.data.get("email", "")
+        password = request.data.get("password", "")
 
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         try:
-            user = User.objects.get(email=email)
+            user = User.objects.get(email=email.lower())
         except User.DoesNotExist:
             raise exceptions.AuthenticationFailed("user with that email does not exist")
 
@@ -119,9 +119,9 @@ class ResetPasswordEmailRequestAPIView(generics.GenericAPIView):
     serializer_class = ResetPasswordEmailRequestSerializer
 
     def post(self, request):
-        data = {"request": request, "data": request.data}
+        data = {"request": request, "email": request.data.get("email")}
         serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exceptions=True)
+        serializer.is_valid(raise_exception=True)
         return Response(
             {"sucess": "we have sent you a link to reset your password"},
             status=status.HTTP_200_OK,

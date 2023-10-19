@@ -11,6 +11,7 @@ from django.utils.encoding import (
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
+from .task import send_email
 
 User = get_user_model()
 
@@ -47,8 +48,8 @@ class ResetPasswordEmailRequestSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         try:
-            email = attrs["data"].get("email")
-            user = User.objects.get(email=email)
+            email = attrs.get("email")
+            user = User.objects.get(email=email, auth_provider="email")
         except User.DoesNotExist:
             return attrs
         else:
@@ -63,10 +64,10 @@ class ResetPasswordEmailRequestSerializer(serializers.Serializer):
                 f"Hi {user.email} use the link below to reset your password \n" + absurl
             )
             data = {
-                "email_body": email_body,
-                "to_email": user.email,
-                "email_subject": "Reset your password",
+                "message": email_body,
+                "recipient_email": user.email,
+                "subject": "Reset your password",
             }
-            pass
+            send_email(**data)
         finally:
             return super().validate(attrs)
