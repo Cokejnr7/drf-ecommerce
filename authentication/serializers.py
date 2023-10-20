@@ -11,7 +11,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from rest_framework import serializers, exceptions
 from .task import send_email
-from .utils import make_otp
+from .utils import make_otp, verify_otp
 
 User = get_user_model()
 
@@ -95,7 +95,7 @@ class SetNewPasswordSerializer(serializers.Serializer):
             id = force_str(urlsafe_base64_decode(uidb64))
             user = User.objects.get(id=id)
 
-            if not PasswordResetTokenGenerator().check_token(user, token):
+            if not verify_otp(user.email, token):
                 raise exceptions.AuthenticationFailed("the reset link is invalid", 401)
 
         except (User.DoesNotExist, DjangoUnicodeDecodeError):

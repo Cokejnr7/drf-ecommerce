@@ -27,6 +27,7 @@ from .serializers import (
     SetNewPasswordSerializer,
 )
 from .token import generate_access_token, generate_refresh_token
+from .utils import verify_otp
 
 
 # Create your views here.
@@ -140,7 +141,7 @@ class PasswordCheckTokenAPIView(generics.GenericAPIView):
             id = smart_str(urlsafe_base64_decode(uidb64))
             user = User.objects.get(id=id)
 
-            if not PasswordResetTokenGenerator().check_token(user, token):
+            if not verify_otp(user.email, token):
                 return Response(
                     {"error": "Invalid token"}, status=status.HTTP_401_UNAUTHORIZED
                 )
