@@ -5,7 +5,6 @@ from django.utils.encoding import (
     smart_bytes,
     smart_str,
     force_str,
-    DjangoUnicodeDecodeError,
 )
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
@@ -53,7 +52,7 @@ class ResetPasswordEmailRequestSerializer(serializers.Serializer):
         try:
             user = User.objects.get(email=email.lower(), auth_provider="email")
         except User.DoesNotExist:
-            return attrs
+            return super().validate(attrs)
         else:
             uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
             token = PasswordResetTokenGenerator().make_token(user)
