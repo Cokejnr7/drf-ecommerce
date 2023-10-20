@@ -5,6 +5,7 @@ from .views import (
     refresh_token_view,
     ResetPasswordEmailRequestAPIView,
     PasswordCheckTokenAPIView,
+    SetNewPasswordAPIView,
 )
 
 urlpatterns = [
@@ -20,5 +21,10 @@ urlpatterns = [
         "password-reset/<uidb64>/<token>/",
         PasswordCheckTokenAPIView.as_view(),
         name="password-reset-confirm",
+    ),
+    path(
+        "password-reset-complete",
+        SetNewPasswordAPIView.as_view(),
+        name="password-reset-complete",
     ),
 ]

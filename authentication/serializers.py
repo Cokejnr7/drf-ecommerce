@@ -5,6 +5,7 @@ from django.utils.encoding import (
     smart_bytes,
     smart_str,
     force_str,
+    DjangoUnicodeDecodeError,
 )
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
@@ -16,7 +17,7 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(min_length=8, write_only=True)
+    password = serializers.CharField(min_length=8, max_length=68, write_only=True)
 
     class Meta:
         model = User
@@ -77,3 +78,32 @@ class ResetPasswordEmailRequestSerializer(serializers.Serializer):
 
 class PasswordCheckTokenSerializer(serializers.Serializer):
     otp = serializers.CharField()
+
+
+class SetNewPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(min_length=8, max_length=68, write_only=True)
+    token = serializers.CharField(min_length=1, write_only=True)
+    uidbase64 = serializers.CharField(min_length=1, write_only=True)
+
+    def validate(self, attrs):
+        password = attrs.get("password", "")
+        token = attrs.get("token", "")
+        uidb64 = attrs.get("uidbase64", "")
+
+        print(password, token, uidb64)
+
+        try:
+            id = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(id=id)
+
+            if not PasswordResetTokenGenerator().check_token(user, token):
+                raise exceptions.AuthenticationFailed("the reset link is invalid", 401)
+
+        except (User.DoesNotExist, DjangoUnicodeDecodeError):
+            raise exceptions.AuthenticationFailed("the reset link is invalid", 401)
+
+        else:
+            user.set_password(password)
+            user.save()
+
+        return super().validate(attrs)

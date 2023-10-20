@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.utils.encoding import smart_str, DjangoUnicodeDecodeError
+from django.utils.encoding import smart_str, force_str, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
@@ -24,6 +24,7 @@ from .serializers import (
     UserLoginSerializer,
     ResetPasswordEmailRequestSerializer,
     PasswordCheckTokenSerializer,
+    SetNewPasswordSerializer,
 )
 from .token import generate_access_token, generate_refresh_token
 
@@ -135,7 +136,6 @@ class PasswordCheckTokenAPIView(generics.GenericAPIView):
     serializer_class = PasswordCheckTokenSerializer
 
     def get(self, request, uidb64, token):
-        
         try:
             id = smart_str(urlsafe_base64_decode(uidb64))
             user = User.objects.get(id=id)
@@ -144,16 +144,32 @@ class PasswordCheckTokenAPIView(generics.GenericAPIView):
                 return Response(
                     {"error": "Invalid token"}, status=status.HTTP_401_UNAUTHORIZED
                 )
+
+        except User.DoesNotExist:
+            return Response("Invalid link", status=status.HTTP_401_UNAUTHORIZED)
         except DjangoUnicodeDecodeError:
             return Response(
                 {"error": "Invalid token"}, status=status.HTTP_401_UNAUTHORIZED
             )
 
         return Response(
-            {"message": "Valid Credentials", "uidb64": uidb64, "token": token},
+            {
+                "sucess": True,
+                "message": "Valid Credentials",
+                "uidb64": uidb64,
+                "token": token,
+            },
             status=status.HTTP_200_OK,
         )
 
-    def post(self, request):
-        pass
-        otp = request.data.get("otp")
+
+class SetNewPasswordAPIView(generics.GenericAPIView):
+    serializer_class = SetNewPasswordSerializer
+
+    def patch(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(
+            {"success": True, "message": "password reset success"},
+            status=status.HTTP_200_OK,
+        )
