@@ -23,7 +23,6 @@ from .serializers import (
     UserSerializer,
     UserLoginSerializer,
     ResetPasswordEmailRequestSerializer,
-    PasswordCheckTokenSerializer,
     SetNewPasswordSerializer,
 )
 from .token import generate_access_token, generate_refresh_token
@@ -133,8 +132,6 @@ class ResetPasswordEmailRequestAPIView(generics.GenericAPIView):
 
 
 class PasswordCheckTokenAPIView(generics.GenericAPIView):
-    serializer_class = PasswordCheckTokenSerializer
-
     def get(self, request, uidb64, token):
         try:
             id = smart_str(urlsafe_base64_decode(uidb64))

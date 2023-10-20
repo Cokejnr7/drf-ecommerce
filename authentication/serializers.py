@@ -76,10 +76,6 @@ class ResetPasswordEmailRequestSerializer(serializers.Serializer):
             return super().validate(attrs)
 
 
-class PasswordCheckTokenSerializer(serializers.Serializer):
-    otp = serializers.CharField()
-
-
 class SetNewPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(min_length=8, max_length=68, write_only=True)
     token = serializers.CharField(min_length=1, write_only=True)
