@@ -27,7 +27,7 @@ SECRET_KEY = config("SECRET_KEY")
 JWT_SECRET_KEY = config("JWT_SECRET_KEY")
 
 # otp secret key
-OTP_SECRET = config("OTP_SECRET")
+OTP_SECRET_KEY = config("OTP_SECRET_KEY")
 
 OTP_INTERVAL = config("OTP_INTERVAL", cast=int)
 
@@ -214,3 +214,6 @@ EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
 EMAIL_PORT = config("EMAIL_PORT", cast=int)
 EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+
+
+print(OTP_SECRET_KEY, OTP_INTERVAL)

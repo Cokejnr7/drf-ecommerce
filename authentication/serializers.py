@@ -3,7 +3,6 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import (
     smart_bytes,
-    smart_str,
     force_str,
     DjangoUnicodeDecodeError,
 )
@@ -12,6 +11,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from rest_framework import serializers, exceptions
 from .task import send_email
+from .utils import make_otp
 
 User = get_user_model()
 
@@ -56,7 +56,7 @@ class ResetPasswordEmailRequestSerializer(serializers.Serializer):
             return super().validate(attrs)
         else:
             uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
-            token = PasswordResetTokenGenerator().make_token(user)
+            token = make_otp(email)
             current_site = get_current_site(request=request).domain
             relative_link = reverse(
                 "password-reset-confirm", kwargs={"uidb64": uidb64, "token": token}
@@ -72,8 +72,11 @@ class ResetPasswordEmailRequestSerializer(serializers.Serializer):
             }
             send_email(**data)
 
-        finally:
-            return super().validate(attrs)
+        return super().validate(attrs)
+
+
+class PasswordCheckTokenSerializer(serializers.Serializer):
+    otp = serializers.IntegerField()
 
 
 class SetNewPasswordSerializer(serializers.Serializer):

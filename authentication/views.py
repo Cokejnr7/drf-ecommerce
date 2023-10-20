@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.utils.encoding import smart_str, force_str, DjangoUnicodeDecodeError
+from django.utils.encoding import smart_str, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
@@ -23,6 +23,7 @@ from .serializers import (
     UserSerializer,
     UserLoginSerializer,
     ResetPasswordEmailRequestSerializer,
+    PasswordCheckTokenSerializer,
     SetNewPasswordSerializer,
 )
 from .token import generate_access_token, generate_refresh_token
@@ -132,6 +133,8 @@ class ResetPasswordEmailRequestAPIView(generics.GenericAPIView):
 
 
 class PasswordCheckTokenAPIView(generics.GenericAPIView):
+    serializer_class = PasswordCheckTokenSerializer
+
     def get(self, request, uidb64, token):
         try:
             id = smart_str(urlsafe_base64_decode(uidb64))
