@@ -2,7 +2,7 @@
 from django.utils.decorators import method_decorator
 
 # rest_framework imports
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, filters, pagination
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -20,12 +20,19 @@ from .permissions import IsStaff
 # Create your views here.
 
 
+class ProductPagination(pagination.PageNumberPagination):
+    page_size = 30
+
+
 # for CRUD operations on the product model
 class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
-    parser_classes = [MultiPartParser, FormParser]
     queryset = Product.objects.all()
+    parser_classes = [MultiPartParser, FormParser]
     permission_classes = [IsStaff, IsAuthenticated]
+    pagination_classes = [ProductPagination]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["^name"]
 
     def retrieve(self, request, *args, **kwargs):
         product = self.get_object()
