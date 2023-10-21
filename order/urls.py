@@ -15,7 +15,5 @@ urlpatterns = [
         name="retrieve-order",
     ),
     path("orders/<str:id>/paid/", views.update_order_paid, name="update-paid"),
-    # admin urls
-    path("admin/orders/<str:id>/", views.RetrieveOrderAPIView.as_view()),
     path("orders/<str:id>/status/", views.update_order_status, name="update-status"),
 ]

@@ -109,23 +109,17 @@ class RetrieveOrderAPIView(generics.GenericAPIView):
 
 
 # updates the order paid field to True
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated, IsStaffOrOrderOwner])
 @api_view(["PUT"])
-def update_order_paid(request, *args, **kwargs):
-    print(args, kwargs)
+def update_order_paid(request, pk):
     try:
-        order = Order.objects.get(id=kwargs["id"])
+        order = Order.objects.get(pk=id)
     except Order.DoesNotExist:
         raise Http404
 
-    if order.owner == request.user:
-        order.is_paid = True
-        return Response("order was paid", status=status.HTTP_200_OK)
-
-    return Response(
-        "You do not have permission to perform this action.",
-        status=status.HTTP_401_UNAUTHORIZED,
-    )
+    order.is_paid = True
+    order.save()
+    return Response("order was paid", status=status.HTTP_200_OK)
 
 
 # update order status
