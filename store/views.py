@@ -31,7 +31,6 @@ class ProductViewSet(viewsets.ModelViewSet):
     parser_classes = [MultiPartParser, FormParser]
     permission_classes = [IsStaff, IsAuthenticated]
     pagination_classes = [ProductPagination]
-    filter_backends = [filters.SearchFilter]
     search_fields = ["^name"]
 
     def retrieve(self, request, *args, **kwargs):
