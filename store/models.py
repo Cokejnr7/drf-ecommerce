@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils.text import slugify
 
 # Create your models here.
 
@@ -35,7 +36,9 @@ class Product(models.Model):
     colors = models.ManyToManyField(Color, blank=True)
     sizes = models.ManyToManyField(Size, blank=True)
     description = models.TextField(blank=True, null=True)
-    categories = models.ManyToManyField("Category", blank=True, related_name="products")
+    categories = models.ForeignKey(
+        "Category", on_delete=models.SET_NULL, related_name="products"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     in_stock = models.BooleanField(default=False)
@@ -61,19 +64,25 @@ class Product(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     image = models.ImageField(
-        upload_to="images/products/%Y/%m/%d", blank=True, null=True
+        upload_to="images/categories/%Y/%m/%d", blank=True, null=True
     )
+    slug = models.SlugField(unique=True)
     description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self) -> str:
-        return self.name
 
     class Meta:
         verbose_name = "Category"
         verbose_name_plural = "Categories"
         ordering = ("-created_at",)
+
+    def __str__(self) -> str:
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super(Category, self).save(*args, **kwargs)
 
 
 class Review(models.Model):

@@ -158,6 +158,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
+# for local testing purposes
+if DEBUG:
+    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
 
 # AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
 # AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
