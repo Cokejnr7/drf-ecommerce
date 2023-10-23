@@ -31,7 +31,9 @@ class ProductViewSet(viewsets.ModelViewSet):
     parser_classes = [MultiPartParser, FormParser]
     permission_classes = [IsStaff, IsAuthenticated]
     pagination_classes = [ProductPagination]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["^name"]
+    ordering_fields = ["price", "name"]
 
     def retrieve(self, request, *args, **kwargs):
         product = self.get_object()
