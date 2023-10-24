@@ -4,7 +4,7 @@ This documentation provides an overview of the Ecommerce API built using Django 
 
 ## Database Schema
 
-![db schema](./static/schema/db-schema.png)
+![db schema](./schema/db-schema.png)
 
 ## Table of Contents
 
