@@ -48,7 +48,7 @@ Response:
 
 **Endpoint:** `POST /api/auth/login/`
 
-logs in a user by providing their email and password. Upon login success, the API will return an access token and user details.
+logs a user in by providing their email and password. Upon login success, the API will return an access token and user details.
 
 Request:
 
@@ -72,3 +72,33 @@ Response:
   }
 }
 ```
+
+### Change Password
+
+This documentation provides a step-by-step guide for changing your password, ensuring the security of your account. The process consists of three main steps:
+
+1. **Request Password Reset**: In this step, you initiate a password reset request.
+2. **Verify OTP**: After requesting a reset, you will receive a password reset link.
+3. **Set a New Password**: Once verified, you can set a new password for your account.
+
+#### Step 1: Request Password Reset
+
+##### 1.1 Initiate Password Reset Request
+
+To begin the password reset process, you must initiate a request. This typically involves navigating to the "Forgot Password" or "Reset Password" option on the login page.
+
+Request:
+
+```json
+POST /api/auth/password-reset-request
+{
+    "email": "user@example.com"
+}
+```
+
+##### 1.2 Receive Reset Link
+
+After initiating the request, you will receive an email containing a link to reset password.
+
+Subject: Password Reset Link
+Body: Your password reset Link is: 123456
