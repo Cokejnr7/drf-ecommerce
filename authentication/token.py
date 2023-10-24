@@ -22,7 +22,7 @@ def generate_refresh_token(user):
     refresh_token_payload = {
         "user_id": user.id,
         "email": user.email,
-        "exp": dt.utcnow() + timedelta(days=2),
+        "exp": dt.utcnow() + timedelta(days=0, minutes=60),
         "iat": dt.utcnow(),
     }
 

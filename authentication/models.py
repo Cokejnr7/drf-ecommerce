@@ -59,12 +59,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 
 # class BlackListedToken(models.Model):
-#     access_token = models.CharField(max_length=500)
 #     refresh_token = models.CharField(max_length=500)
 #     user = models.ForeignKey(
-#         CustomUser, related_name="token_user", on_delete=models.CASCADE
+#         CustomUser, related_name="tokens", on_delete=models.CASCADE
 #     )
 #     timestamp = models.DateTimeField(auto_now=True)
 
 #     class Meta:
-#         unique_together = ("access_token", "refresh_token", "user")
+#         unique_together = ("refresh_token", "user")

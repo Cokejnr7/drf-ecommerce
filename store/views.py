@@ -46,12 +46,14 @@ class ProductViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(product)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    # returns the first 8 most popular products
     @action(detail=False, methods=["get"])
     def popular_products(self, request):
         products = self.get_queryset().order_by("-popularity")[:8]
         serializer = self.get_serializer(products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    # returns eight of the latest products
     @action(detail=False, methods=["get"])
     def recent_products(self, request):
         products = self.get_queryset()[:8]
@@ -70,3 +72,9 @@ class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
     permission_classes = [IsStaff, IsAuthenticated]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ["^slug"]
+    ordering_fields = [
+        "slug",
+        "created_at",
+    ]

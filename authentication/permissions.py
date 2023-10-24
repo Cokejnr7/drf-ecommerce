@@ -11,7 +11,7 @@ class IsTokenValid(permissions.BasePermission):
         print(access_token)
         try:
             is_blackListed = BlackListedToken.objects.get(
-                user=user_id, access_token=access_token, refresh_token=refresh_token
+                user=user_id, refresh_token=refresh_token
             )
             if is_blackListed:
                 is_allowed_user = False

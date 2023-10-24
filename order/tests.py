@@ -61,7 +61,7 @@ class TestOrderModel(TestCase):
             first_name=user.first_name,
             last_name=user.last_name,
             email=user.email,
-            phone="+2348578853857307",
+            phone="+2348578857307",
             address1="mushin",
             postal_code="1212",
             city="lagos",
