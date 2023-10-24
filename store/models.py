@@ -37,7 +37,7 @@ class Product(models.Model):
     sizes = models.ManyToManyField(Size, blank=True)
     description = models.TextField(blank=True, null=True)
     categories = models.ForeignKey(
-        "Category", on_delete=models.SET_NULL, related_name="products"
+        "Category", on_delete=models.SET_NULL, related_name="products", null=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
