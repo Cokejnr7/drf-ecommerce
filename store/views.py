@@ -15,6 +15,7 @@ from drf_yasg.utils import swagger_auto_schema
 from .serializers import ProductSerializer, CategorySerializer
 from .models import Product, Category
 from .permissions import IsStaff
+from .filters import PriceRangeFilter
 
 
 # Create your views here.
@@ -31,7 +32,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     parser_classes = [MultiPartParser, FormParser]
     permission_classes = [IsStaff, IsAuthenticated]
     pagination_classes = [ProductPagination]
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter, PriceRangeFilter]
     search_fields = ["^name"]
     ordering_fields = ["price", "name"]
 
