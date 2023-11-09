@@ -7,6 +7,37 @@ from django.utils.text import slugify
 User = get_user_model()
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    image = models.ImageField(
+        upload_to="images/categories/%Y/%m/%d", blank=True, null=True
+    )
+    slug = models.SlugField(unique=True)
+    parent = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="children",
+    )
+    description = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
+        ordering = ("-created_at",)
+
+    def __str__(self) -> str:
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super(Category, self).save(*args, **kwargs)
+
+
 class Color(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
@@ -59,30 +90,6 @@ class Product(models.Model):
 
     def __str__(self) -> str:
         return self.name
-
-
-class Category(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    image = models.ImageField(
-        upload_to="images/categories/%Y/%m/%d", blank=True, null=True
-    )
-    slug = models.SlugField(unique=True)
-    description = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name = "Category"
-        verbose_name_plural = "Categories"
-        ordering = ("-created_at",)
-
-    def __str__(self) -> str:
-        return self.name
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super(Category, self).save(*args, **kwargs)
 
 
 class Review(models.Model):
