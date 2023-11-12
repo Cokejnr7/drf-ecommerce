@@ -55,7 +55,7 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     popularity = models.PositiveIntegerField(default=0)
-    stock_status = models.BooleanField(default=False)
+    stock_count = models.PositiveIntegerField(default=0)
 
     class Meta:
         verbose_name = "Product"
@@ -72,13 +72,24 @@ class ProductVariant(models.Model):
     size = models.ForeignKey(Size, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=7, decimal_places=2)
     image = models.ImageField(upload_to="images/products/%Y/%m/%d")
-    co_status = models.BooleanField(default=False)
+    stock_count = models.PositiveIntegerField(default=0)
 
     class Meta:
         unique_together = ["product", "size", "color"]
 
     def __str__(self) -> str:
         return f"{self.product.name}-{self.color}-{self.size}"
+
+    def save(self, *args, **kwargs):
+        stock_change = (
+            abs(self.stock_count - self.__class__.objects.get(id=self.id))
+            if self.id
+            else self.stock_count
+        )
+
+        self.product.stock_count += stock_change
+        self.product.save()
+        super().save(*args, **kwargs)
 
 
 class Review(models.Model):

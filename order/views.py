@@ -1,11 +1,11 @@
 # django imports
 from django.http import Http404
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
 
 # rest_framework imports
-from rest_framework import generics, viewsets, mixins
+from rest_framework import generics, status, serializers
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from .serializers import OrderSerializer, OrderItemSerializer
@@ -23,7 +23,7 @@ User = get_user_model()
 
 
 # get list of user orders or create new order
-class UserListCreateOrderAPIView(generics.GenericAPIView):
+class ListCreateOrderAPIView(generics.GenericAPIView):
     serializer_class = OrderSerializer
     queryset = Order.objects.all()
     permission_classes = [IsAuthenticated]
@@ -53,24 +53,34 @@ class UserListCreateOrderAPIView(generics.GenericAPIView):
         items = data.pop("items")
 
         try:
-            # creating new order
+            # order instance
             order = Order(**data)
+
             # testing to change to request.user
             order.owner = request.user
-            order.save()
 
-            # looping through the list of item dictionary to create OrderItems
+            # looping through the list of items dictionary to create OrderItems
             for item in items:
                 product_variant = ProductVariant.objects.get(
                     id=item.get("product_variant")
                 )
+
+                # updating count in stock of the product
+                if item["qty"] > product_variant.qty:
+                    raise serializers.ValidationError(
+                        _(
+                            f"Insufficient stock for {product_variant.product.name}- {product_variant.product.color.name}- {product_variant.product.size.name}"
+                        )
+                    )
+
                 item = OrderItem.objects.create(
                     product_variant=product_variant, qty=item["qty"], order=order
                 )
 
-                # updating count in stock of the product
-                product.count_instock -= item.qty
-                product.save()
+                product_variant.count_instock -= item.qty
+                product_variant.save()
+
+            order.save()
 
         except Exception as e:
             return Response(f"validation error {e}", status=status.HTTP_400_BAD_REQUEST)

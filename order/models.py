@@ -87,7 +87,7 @@ class OrderItem(models.Model):
     def save(self, *args, **kwargs):
         self.price = self.product_variant.product.price
         self.name = self.product_variant.product.name
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return self.name

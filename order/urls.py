@@ -6,8 +6,8 @@ urlpatterns = [
     # user urls
     path(
         "orders/",
-        views.UserListCreateOrderAPIView.as_view(),
-        name="user-list-create",
+        views.ListCreateOrderAPIView.as_view(),
+        name="list-create-order",
     ),
     path(
         "orders/<str:id>/",
