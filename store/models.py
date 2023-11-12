@@ -38,6 +38,14 @@ class Category(models.Model):
         super(Category, self).save(*args, **kwargs)
 
 
+class Size(models.Model):
+    name = models.CharField(max_length=100)
+
+
+class Color(models.model):
+    name = models.CharField(max_length=100)
+
+
 class Product(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
@@ -47,6 +55,7 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     popularity = models.PositiveIntegerField(default=0)
+    stock_status = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "Product"
@@ -59,11 +68,11 @@ class Product(models.Model):
 
 class ProductVariant(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    color = models.CharField(max_length=50)
-    size = models.CharField(max_length=10)
+    color = models.ForeignKey(Color, on_delete=models.CASCADE)
+    size = models.ForeignKey(Size, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=7, decimal_places=2)
     image = models.ImageField(upload_to="images/products/%Y/%m/%d")
-    stock_status = models.BooleanField(default=False)
+    co_status = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ["product", "size", "color"]

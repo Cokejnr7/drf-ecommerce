@@ -12,7 +12,7 @@ from .serializers import OrderSerializer, OrderItemSerializer
 
 # application imports
 from .models import Order, OrderItem
-from store.models import Product
+from store.models import ProductVariant
 from .permissions import IsStaffOrOrderOwner, IsStaff
 
 # ------ ----- ---- python ---- ----- ------
@@ -61,9 +61,11 @@ class UserListCreateOrderAPIView(generics.GenericAPIView):
 
             # looping through the list of item dictionary to create OrderItems
             for item in items:
-                product = Product.objects.get(id=item.get("product"))
+                product_variant = ProductVariant.objects.get(
+                    id=item.get("product_variant")
+                )
                 item = OrderItem.objects.create(
-                    product=product, qty=item["qty"], order=order
+                    product_variant=product_variant, qty=item["qty"], order=order
                 )
 
                 # updating count in stock of the product

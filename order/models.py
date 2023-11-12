@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from store.models import Product
+from store.models import ProductVariant
 from django.contrib.auth import get_user_model
 from .validators import validate_item_price
 from django.utils.translation import gettext_lazy as _
@@ -55,8 +55,8 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    product = models.ForeignKey(
-        Product,
+    product_variant = models.ForeignKey(
+        ProductVariant,
         on_delete=models.CASCADE,
         related_name="order_items",
     )
@@ -85,8 +85,8 @@ class OrderItem(models.Model):
         return self.qty * self.price
 
     def save(self, *args, **kwargs):
-        self.price = self.product.price
-        self.name = self.product.name
+        self.price = self.product_variant.product.price
+        self.name = self.product_variant.product.name
         return super().save(*args, **kwargs)
 
     def __str__(self) -> str:
