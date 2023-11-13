@@ -82,7 +82,7 @@ class ProductVariant(models.Model):
 
     def save(self, *args, **kwargs):
         stock_change = (
-            abs(self.stock_count - self.__class__.objects.get(id=self.id))
+            self.stock_count - self.__class__.objects.get(id=self.id)
             if self.id
             else self.stock_count
         )
