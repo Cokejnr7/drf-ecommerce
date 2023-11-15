@@ -79,3 +79,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
         "slug",
         "created_at",
     ]
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(parent=None)
+        return queryset

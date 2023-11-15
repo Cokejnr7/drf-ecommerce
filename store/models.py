@@ -12,7 +12,7 @@ class Category(models.Model):
     image = models.ImageField(
         upload_to="images/categories/%Y/%m/%d", blank=True, null=True
     )
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True)
     parent = models.ForeignKey(
         "self",
         on_delete=models.SET_NULL,
@@ -42,7 +42,7 @@ class Size(models.Model):
     name = models.CharField(max_length=100)
 
 
-class Color(models.model):
+class Color(models.Model):
     name = models.CharField(max_length=100)
 
 
