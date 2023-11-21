@@ -5,7 +5,6 @@ from django.utils.decorators import method_decorator
 from rest_framework import viewsets, status, filters, pagination
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
 
 # 3rd party imports
@@ -30,7 +29,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
     parser_classes = [MultiPartParser, FormParser]
-    permission_classes = [IsStaff, IsAuthenticated]
+    permission_classes = [IsStaff]
     pagination_classes = [ProductPagination]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter, PriceRangeFilter]
     search_fields = ["^name"]
@@ -40,7 +39,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         product = self.get_object()
 
         # increase product populaarity when a customer views the product
-        if not (request.user.is_staff) and not (request.user.superuser):
+        if not (request.user.is_staff) and not (request.user.is_superuser):
             product.popularity += 1
             product.save()
 
@@ -72,7 +71,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
-    permission_classes = [IsStaff, IsAuthenticated]
+    permission_classes = [IsStaff]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["^slug"]
     ordering_fields = [

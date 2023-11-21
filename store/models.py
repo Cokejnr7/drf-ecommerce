@@ -49,6 +49,10 @@ class Color(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
+    image = models.ImageField(
+        upload_to="images/product/%Y/%m/%d", blank=True, null=True
+    )
+    price = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
     categories = models.ForeignKey(
         "Category", on_delete=models.SET_NULL, related_name="products", null=True
     )
